@@ -9,3 +9,7 @@ packaged.yaml: template.yaml
 
 clean:
 	rm -f packaged.yaml
+
+destroy:
+	aws cloudformation delete-stack --stack-name $(STACK_NAME)
+

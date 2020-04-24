@@ -49,7 +49,5 @@ Resources:
         DomainName: !Ref DomainName
         CertificateArn: !Ref ACMCertificateArn
         EndpointConfiguration: EDGE
-        BasePath:
-          - /home
         Route53:
           HostedZoneId: Z1LX50EVZWR0DV
