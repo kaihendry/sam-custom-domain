@@ -33,12 +33,18 @@ Resources:
       Handler: index.handler
       Runtime: nodejs12.x
       Events:
-        Fetch:
+        ProxyApiRoot:
           Type: Api
           Properties:
             RestApiId: !Ref MyApi
             Method: Get
             Path: /
+        ProxyApiGreedy:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyApi
+            Path: /{proxy+}
+            Method: ANY
 
   MyApi:
     Type: AWS::Serverless::Api # Also works with HTTP API
