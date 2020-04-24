@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  domaintest
+  
+  Sample SAM Template for gotestsam
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 5
+
+
+Parameters:
+  DomainName:
+    Type: String
+    Default: 'domaintest.goserverless.sg'
+  ACMCertificateArn:
+    Type: String
+    Default: arn:aws:acm:us-east-1:407461997746:certificate/13c6805d-4c20-426b-b237-f1120dcb8a12
+Resources:
+  MyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      InlineCode: |
+        exports.handler = async (event) => {
+          const response = {
+            statusCode: 200,
+            body: JSON.stringify('Hello from Lambda!'),
+          };
+          return response;
+        };
+      Handler: index.handler
+      Runtime: nodejs12.x
+      Events:
+        ProxyApiRoot:
+          Type: Api
+          Properties:
+            Path: /
+            Method: ANY
+        ProxyApiGreedy:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+
+  MyApi:
+    Type: AWS::Serverless::Api # Also works with HTTP API
+    Properties:
+      OpenApiVersion: 3.0.1
+      StageName: Prod
+      Domain:
+        DomainName: !Ref DomainName
+        CertificateArn: !Ref ACMCertificateArn
+        EndpointConfiguration: EDGE
+        BasePath:
+          - /
+        Route53:
+          HostedZoneId: Z1LX50EVZWR0DV
