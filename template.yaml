@@ -33,16 +33,12 @@ Resources:
       Handler: index.handler
       Runtime: nodejs12.x
       Events:
-        ProxyApiRoot:
+        Fetch:
           Type: Api
           Properties:
+            RestApiId: !Ref MyApi
+            Method: Get
             Path: /
-            Method: ANY
-        ProxyApiGreedy:
-          Type: Api
-          Properties:
-            Path: /{proxy+}
-            Method: ANY
 
   MyApi:
     Type: AWS::Serverless::Api # Also works with HTTP API
@@ -54,6 +50,6 @@ Resources:
         CertificateArn: !Ref ACMCertificateArn
         EndpointConfiguration: EDGE
         BasePath:
-          - /
+          - /home
         Route53:
           HostedZoneId: Z1LX50EVZWR0DV
