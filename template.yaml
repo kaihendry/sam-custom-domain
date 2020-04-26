@@ -15,37 +15,48 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       InlineCode: |
-        exports.handler = async (event) => {
-          const response = {
-            statusCode: 200,
-            body: JSON.stringify('Hello from kaihendry/sam-custom-domain!'),
-          };
-          return response;
-        };
+          def handler(event, context):
+              import json
+              return {
+                  "statusCode": 200,
+                  "body": json.dumps(event),
+              }
       Handler: index.handler
-      Runtime: nodejs12.x
+      Runtime: python3.7
       Events:
-        ProxyApiRoot:
-          Type: Api
+        ExplicitApi: # warning: creates a public endpoint
+          Type: HttpApi
           Properties:
-            RestApiId: !Ref MyApi
-            Method: Get
+            ApiId: !Ref HttpApi
+            Method: GET
             Path: /
-        ProxyApiGreedy:
-          Type: Api
-          Properties:
-            RestApiId: !Ref MyApi
-            Path: /{proxy+}
-            Method: ANY
 
-  MyApi:
-    Type: AWS::Serverless::Api # Also works with HTTP API
+  HttpApi:
+    Type: AWS::Serverless::HttpApi
+
+  ApiCustomDomain:
+    Type: AWS::ApiGatewayV2::DomainName
     Properties:
-      OpenApiVersion: 3.0.1
-      StageName: Prod
-      Domain:
-        DomainName: !Ref DomainName
-        CertificateArn: !Ref ACMCertificateArn
-        EndpointConfiguration: EDGE
-        Route53:
-          HostedZoneId: !Ref HostedZoneId
+      DomainName: !Ref DomainName
+      DomainNameConfigurations:
+        - CertificateArn: !Ref ACMCertificateArn
+          EndpointType: REGIONAL
+
+  ApiMapping:
+    Type: AWS::ApiGatewayV2::ApiMapping
+    Properties:
+      DomainName: !Ref DomainName
+      ApiId: !Ref HttpApi
+      Stage: "$default"
+
+  RegionalRoute53Record:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      SetIdentifier: http-testing
+      AliasTarget:
+        DNSName: !Ref DomainName
+        HostedZoneId: !Ref HostedZoneId
+      Name: !Ref DomainName
+      HostedZoneId: !Ref HostedZoneId
+      Region: ap-southeast-1
+      Type: A

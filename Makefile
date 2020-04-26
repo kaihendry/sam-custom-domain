@@ -1,8 +1,9 @@
 AWS_PROFILE = mine
-STACK_NAME = sam-custom-domain
+STACK_NAME = sam-custom-domain-http
+BUCKET = dabase.com
 
-DOMAINNAME = domaintest.goserverless.sg
-ACMCERTIFICATEARN = arn:aws:acm:us-east-1:407461997746:certificate/13c6805d-4c20-426b-b237-f1120dcb8a12
+DOMAINNAME = domainhttptest.goserverless.sg
+ACMCERTIFICATEARN = arn:aws:acm:ap-southeast-1:407461997746:certificate/103c4d5b-1309-460e-a0cb-a63a92372e2e
 HOSTEDZONEID = Z1LX50EVZWR0DV
 SAM = AWS_PROFILE=$(AWS_PROFILE) sam
 
@@ -16,6 +17,7 @@ deploy: packaged.yaml
 
 packaged.yaml: template.yaml
 	$(SAM) package --template-file template.yaml \
+		--s3-bucket $(BUCKET) --s3-prefix $(STACK_NAME) \
 		--output-template-file packaged.yaml
 
 clean:
