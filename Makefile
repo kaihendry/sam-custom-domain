@@ -1,5 +1,6 @@
 AWS_PROFILE = mine
 STACK_NAME = sam-custom-domain
+BUCKET = dabase.com
 
 DOMAINNAME = domaintest.goserverless.sg
 ACMCERTIFICATEARN = arn:aws:acm:us-east-1:407461997746:certificate/13c6805d-4c20-426b-b237-f1120dcb8a12
@@ -14,8 +15,9 @@ deploy: packaged.yaml
 			HostedZoneId=$(HOSTEDZONEID) \
 		--no-fail-on-empty-changeset
 
-packaged.yaml: template.yaml
+packaged.yaml: validate template.yaml
 	$(SAM) package --template-file template.yaml \
+		--s3-bucket $(BUCKET) --s3-prefix $(STACK_NAME) \
 		--output-template-file packaged.yaml
 
 clean:
@@ -26,3 +28,6 @@ destroy:
 
 test:
 	curl https://$(DOMAINNAME)
+
+validate:
+	AWS_PROFILE=$(AWS_PROFILE) aws cloudformation validate-template --template-body file://template.yaml

@@ -1,8 +1,8 @@
-AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
   https://github.com/kaihendry/sam-custom-domain
-
+  Derived from
+  https://github.com/awslabs/serverless-application-model/blob/develop/examples/2016-10-31/custom_domains_with_route53/template.yaml
 Parameters:
   DomainName:
     Type: String
@@ -39,10 +39,9 @@ Resources:
             Method: ANY
 
   MyApi:
-    Type: AWS::Serverless::Api # Also works with HTTP API
+    Type: AWS::Serverless::Api
     Properties:
-      OpenApiVersion: 3.0.1
-      StageName: Prod
+      StageName: Dev
       Domain:
         DomainName: !Ref DomainName
         CertificateArn: !Ref ACMCertificateArn
