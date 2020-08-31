@@ -1,0 +1,11 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "sam-custom-domain"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-i3wai8ebw69i"
+s3_prefix = "sam-custom-domain"
+region = "ap-southeast-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "DomainName=\"domaintest.goserverless.sg\" ACMCertificateArn=\"arn:aws:acm:us-east-1:407461997746:certificate/13c6805d-4c20-426b-b237-f1120dcb8a12\" HostedZoneId=\"Z1LX50EVZWR0DV\""

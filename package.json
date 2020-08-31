@@ -1,0 +1,13 @@
+{
+  "name": "sam-custom-domain",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kaihendry/sam-custom-domain.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kaihendry/sam-custom-domain/issues"
+  },
+  "homepage": "https://github.com/kaihendry/sam-custom-domain#readme"
+}
